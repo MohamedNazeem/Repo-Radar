@@ -23,9 +23,11 @@ export function SearchPage() {
   const dispatch = useAppDispatch();
   const query = useAppSelector((state) => state.search.query);
   const results = useAppSelector((state) => state.search.results);
-  const status = useAppSelector((state) => state.search.status);
+  const loading = useAppSelector((state) => state.search.loading);
   const error = useAppSelector((state) => state.search.error);
-  const trackedIds = useAppSelector((state) => state.tracked.ids);
+  const trackedIds = useAppSelector((state) =>
+    state.tracked.repos.map((repo) => repo.id),
+  );
   const debouncedQuery = useDebouncedValue(query, 400);
 
   useEffect(() => {
@@ -55,16 +57,20 @@ export function SearchPage() {
           />
         ) : null}
 
-        {query.trim() && status === "loading" ? <LoadingSkeleton count={6} /> : null}
+        {query.trim() && loading ? <LoadingSkeleton count={6} /> : null}
 
-        {query.trim() && status === "succeeded" && results.length === 0 ? (
+        {query.trim() &&
+        !loading &&
+        !error &&
+        results.length === 0 &&
+        debouncedQuery.trim() === query.trim() ? (
           <EmptyState
             title="No repositories found"
             description="Try a different keyword or a more specific owner/name query."
           />
         ) : null}
 
-        {status === "succeeded" && results.length > 0 ? (
+        {!loading && results.length > 0 ? (
           <Grid container spacing={2}>
             {results.map((repo) => {
               const id = toRepoId(repo.full_name);

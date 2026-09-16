@@ -1,6 +1,5 @@
 import {
   createAsyncThunk,
-  createSelector,
   createSlice,
   type PayloadAction,
 } from "@reduxjs/toolkit";
@@ -11,22 +10,39 @@ import {
   type GithubRepo,
   type TrackedRepo,
 } from "@repo/api";
-import { getErrorMessage, type RequestStatus } from "../types.js";
-import { getGithubClient } from "../search/searchSlice.js";
+import { getGithubClient } from "../githubClient.js";
+import { getErrorMessage } from "../types.js";
 
 export interface TrackedState {
-  ids: string[];
-  entities: Record<string, TrackedRepo>;
-  statusById: Record<string, RequestStatus>;
-  errorById: Record<string, string | null>;
+  repos: TrackedRepo[];
+  loadingIds: string[];
+  errorById: Record<string, string>;
 }
 
 const initialState: TrackedState = {
-  ids: [],
-  entities: {},
-  statusById: {},
+  repos: [],
+  loadingIds: [],
   errorById: {},
 };
+
+function upsertRepo(repos: TrackedRepo[], repo: TrackedRepo): void {
+  const index = repos.findIndex((existing) => existing.id === repo.id);
+  if (index === -1) {
+    repos.push(repo);
+    return;
+  }
+  repos[index] = repo;
+}
+
+function addLoadingId(state: TrackedState, id: string): void {
+  if (!state.loadingIds.includes(id)) {
+    state.loadingIds.push(id);
+  }
+}
+
+function removeLoadingId(state: TrackedState, id: string): void {
+  state.loadingIds = state.loadingIds.filter((loadingId) => loadingId !== id);
+}
 
 async function fetchTrackedDetails(
   owner: string,
@@ -45,10 +61,8 @@ export const trackRepo = createAsyncThunk(
   async (repo: GithubRepo, { rejectWithValue }) => {
     try {
       const { owner, repo: repoName } = parseFullName(repo.full_name);
-      const tracked = await fetchTrackedDetails(owner, repoName);
-      return tracked;
+      return await fetchTrackedDetails(owner, repoName);
     } catch (error) {
-      // Fall back to search payload so tracking still works offline from rate limits mid-fetch.
       try {
         return mapGithubRepoToTracked(repo, null);
       } catch {
@@ -62,7 +76,7 @@ export const refreshRepo = createAsyncThunk(
   "tracked/refreshRepo",
   async (id: string, { getState, rejectWithValue }) => {
     const state = getState() as { tracked: TrackedState };
-    const existing = state.tracked.entities[id];
+    const existing = state.tracked.repos.find((repo) => repo.id === id);
     if (!existing) {
       return rejectWithValue("Repository is not tracked");
     }
@@ -76,84 +90,52 @@ export const refreshRepo = createAsyncThunk(
   },
 );
 
-export const refreshAllTracked = createAsyncThunk(
-  "tracked/refreshAllTracked",
-  async (_, { getState, dispatch }) => {
-    const state = getState() as { tracked: TrackedState };
-    const ids = state.tracked.ids;
-    await Promise.allSettled(ids.map((id) => dispatch(refreshRepo(id))));
-    return ids;
-  },
-);
-
 const trackedSlice = createSlice({
   name: "tracked",
   initialState,
   reducers: {
     untrackRepo(state, action: PayloadAction<string>) {
       const id = action.payload;
-      state.ids = state.ids.filter((existingId) => existingId !== id);
-      delete state.entities[id];
-      delete state.statusById[id];
+      state.repos = state.repos.filter((repo) => repo.id !== id);
+      removeLoadingId(state, id);
       delete state.errorById[id];
-    },
-    hydrateTrackedFromSearch(state, action: PayloadAction<GithubRepo>) {
-      const tracked = mapGithubRepoToTracked(action.payload, null);
-      if (!state.entities[tracked.id]) {
-        state.ids.push(tracked.id);
-      }
-      state.entities[tracked.id] = {
-        ...tracked,
-        lastCommitDate:
-          state.entities[tracked.id]?.lastCommitDate ?? tracked.lastCommitDate,
-      };
-      state.statusById[tracked.id] = state.statusById[tracked.id] ?? "idle";
-      state.errorById[tracked.id] = state.errorById[tracked.id] ?? null;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(trackRepo.pending, (state, action) => {
         const id = toRepoId(action.meta.arg.full_name);
-        if (!state.entities[id]) {
-          // Optimistic placeholder from search result
-          state.entities[id] = mapGithubRepoToTracked(action.meta.arg, null);
-          state.ids.push(id);
+        if (!state.repos.some((repo) => repo.id === id)) {
+          state.repos.push(mapGithubRepoToTracked(action.meta.arg, null));
         }
-        state.statusById[id] = "loading";
-        state.errorById[id] = null;
+        addLoadingId(state, id);
+        delete state.errorById[id];
       })
       .addCase(trackRepo.fulfilled, (state, action) => {
-        const tracked = action.payload;
-        if (!state.ids.includes(tracked.id)) {
-          state.ids.push(tracked.id);
-        }
-        state.entities[tracked.id] = tracked;
-        state.statusById[tracked.id] = "succeeded";
-        state.errorById[tracked.id] = null;
+        upsertRepo(state.repos, action.payload);
+        removeLoadingId(state, action.payload.id);
+        delete state.errorById[action.payload.id];
       })
       .addCase(trackRepo.rejected, (state, action) => {
         const id = toRepoId(action.meta.arg.full_name);
-        state.statusById[id] = "failed";
+        removeLoadingId(state, id);
         state.errorById[id] =
           (action.payload as string | undefined) ??
           action.error.message ??
           "Failed to track repository";
       })
       .addCase(refreshRepo.pending, (state, action) => {
-        const id = action.meta.arg;
-        state.statusById[id] = "loading";
-        state.errorById[id] = null;
+        addLoadingId(state, action.meta.arg);
+        delete state.errorById[action.meta.arg];
       })
       .addCase(refreshRepo.fulfilled, (state, action) => {
-        const tracked = action.payload;
-        state.entities[tracked.id] = tracked;
-        state.statusById[tracked.id] = "succeeded";
-        state.errorById[tracked.id] = null;
+        upsertRepo(state.repos, action.payload);
+        removeLoadingId(state, action.payload.id);
+        delete state.errorById[action.payload.id];
       })
       .addCase(refreshRepo.rejected, (state, action) => {
         const id = action.meta.arg;
-        state.statusById[id] = "failed";
+        removeLoadingId(state, id);
         state.errorById[id] =
           (action.payload as string | undefined) ??
           action.error.message ??
@@ -162,29 +144,11 @@ const trackedSlice = createSlice({
   },
 });
 
-export const { untrackRepo, hydrateTrackedFromSearch } = trackedSlice.actions;
+export const { untrackRepo } = trackedSlice.actions;
 export const trackedReducer = trackedSlice.reducer;
 
-type RootLike = { tracked: TrackedState };
-
-export const selectTrackedIds = (state: RootLike) => state.tracked.ids;
-export const selectTrackedEntities = (state: RootLike) => state.tracked.entities;
-export const selectStatusById = (state: RootLike) => state.tracked.statusById;
-export const selectErrorById = (state: RootLike) => state.tracked.errorById;
-
-export const selectTrackedRepos = createSelector(
-  [selectTrackedIds, selectTrackedEntities],
-  (ids, entities) => ids.map((id) => entities[id]).filter(Boolean),
-);
-
-export const selectStarsChartData = createSelector(
-  [selectTrackedRepos],
-  (repos) =>
-    repos.map((repo) => ({
-      label: repo.fullName,
-      stars: repo.stars,
-    })),
-);
-
-export const selectIsTracked = (id: string) => (state: RootLike) =>
-  Boolean(state.tracked.entities[id]);
+export const selectStarsChartData = (state: { tracked: TrackedState }) =>
+  state.tracked.repos.map((repo) => ({
+    label: repo.fullName,
+    stars: repo.stars,
+  }));

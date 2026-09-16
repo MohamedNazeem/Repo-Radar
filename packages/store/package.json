@@ -19,8 +19,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
     "@repo/api": "workspace:*",
-    "react-redux": "^9.2.0",
-    "redux-persist": "^6.0.0"
+    "react-redux": "^9.2.0"
   },
   "peerDependencies": {
     "react": "^19.0.0"

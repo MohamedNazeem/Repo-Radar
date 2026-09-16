@@ -5,7 +5,7 @@ Monorepo dashboard for searching GitHub repositories, tracking favorites, and mo
 ## Stack
 
 - React 19 + TypeScript
-- Redux Toolkit + redux-persist (localStorage)
+- Redux Toolkit + localStorage persistence
 - MUI
 - GitHub REST API
 - pnpm workspaces + Turborepo
@@ -27,8 +27,6 @@ Monorepo dashboard for searching GitHub repositories, tracking favorites, and mo
 pnpm install
 pnpm dev
 ```
-
-App URL: [http://127.0.0.1:43123](http://127.0.0.1:43123)
 
 ### Optional GitHub token
 

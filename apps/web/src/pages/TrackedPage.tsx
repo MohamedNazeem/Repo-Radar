@@ -6,10 +6,8 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { StarsBarChart } from "@repo/plots";
 import { EmptyState, PageHeader, RepoCard } from "@repo/ui";
 import {
-  refreshAllTracked,
   refreshRepo,
   selectStarsChartData,
-  selectTrackedRepos,
   untrackRepo,
   useAppDispatch,
   useAppSelector,
@@ -17,13 +15,11 @@ import {
 
 export function TrackedPage() {
   const dispatch = useAppDispatch();
-  const trackedRepos = useAppSelector(selectTrackedRepos);
+  const trackedRepos = useAppSelector((state) => state.tracked.repos);
   const chartData = useAppSelector(selectStarsChartData);
-  const statusById = useAppSelector((state) => state.tracked.statusById);
+  const loadingIds = useAppSelector((state) => state.tracked.loadingIds);
   const errorById = useAppSelector((state) => state.tracked.errorById);
-  const isRefreshingAll = trackedRepos.some(
-    (repo) => statusById[repo.id] === "loading",
-  );
+  const isRefreshingAll = loadingIds.length > 0;
 
   return (
     <>
@@ -36,7 +32,9 @@ export function TrackedPage() {
             startIcon={<RefreshIcon />}
             disabled={trackedRepos.length === 0 || isRefreshingAll}
             onClick={() => {
-              void dispatch(refreshAllTracked());
+              trackedRepos.forEach((repo) => {
+                void dispatch(refreshRepo(repo.id));
+              });
             }}
           >
             Refresh all
@@ -58,30 +56,27 @@ export function TrackedPage() {
         />
       ) : (
         <Grid container spacing={2}>
-          {trackedRepos.map((repo) => {
-            const status = statusById[repo.id] ?? "idle";
-            return (
-              <Grid key={repo.id} size={{ xs: 12, md: 6, lg: 4 }}>
-                <RepoCard
-                  fullName={repo.fullName}
-                  description={repo.description}
-                  htmlUrl={repo.htmlUrl}
-                  stars={repo.stars}
-                  openIssues={repo.openIssues}
-                  lastCommitDate={repo.lastCommitDate}
-                  language={repo.language}
-                  isTracked
-                  isLoading={status === "loading"}
-                  error={errorById[repo.id]}
-                  showRefresh
-                  onTrackToggle={() => dispatch(untrackRepo(repo.id))}
-                  onRefresh={() => {
-                    void dispatch(refreshRepo(repo.id));
-                  }}
-                />
-              </Grid>
-            );
-          })}
+          {trackedRepos.map((repo) => (
+            <Grid key={repo.id} size={{ xs: 12, md: 6, lg: 4 }}>
+              <RepoCard
+                fullName={repo.fullName}
+                description={repo.description}
+                htmlUrl={repo.htmlUrl}
+                stars={repo.stars}
+                openIssues={repo.openIssues}
+                lastCommitDate={repo.lastCommitDate}
+                language={repo.language}
+                isTracked
+                isLoading={loadingIds.includes(repo.id)}
+                error={errorById[repo.id]}
+                showRefresh
+                onTrackToggle={() => dispatch(untrackRepo(repo.id))}
+                onRefresh={() => {
+                  void dispatch(refreshRepo(repo.id));
+                }}
+              />
+            </Grid>
+          ))}
         </Grid>
       )}
     </>
