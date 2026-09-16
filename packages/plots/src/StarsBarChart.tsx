@@ -40,32 +40,47 @@ export function StarsBarChart({ data, height = 320 }: StarsBarChartProps) {
   const chartData = data.map((item) => ({
     ...item,
     shortLabel: item.label.includes("/")
-      ? item.label.split("/")[1]
+      ? (item.label.split("/")[1] ?? item.label)
       : item.label,
   }));
 
   return (
-    <div style={{ width: "100%", height }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={chartData} margin={{ top: 8, right: 16, left: 8, bottom: 48 }}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} />
+    <div style={{ width: "100%", height, minHeight: height }}>
+      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+        <BarChart
+          data={chartData}
+          margin={{ top: 16, right: 24, left: 8, bottom: 56 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#d7dee5" />
           <XAxis
             dataKey="shortLabel"
             interval={0}
             angle={-25}
             textAnchor="end"
-            height={60}
-            tick={{ fontSize: 12 }}
+            height={64}
+            tick={{ fontSize: 12, fill: "#44515c" }}
           />
-          <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+          <YAxis
+            allowDecimals={false}
+            width={72}
+            tick={{ fontSize: 12, fill: "#44515c" }}
+            tickFormatter={(value: number) => value.toLocaleString()}
+          />
           <Tooltip
+            cursor={{ fill: "rgba(11, 61, 92, 0.06)" }}
             formatter={(value: number) => [value.toLocaleString(), "Stars"]}
             labelFormatter={(_, payload) => {
               const row = payload?.[0]?.payload as { label?: string } | undefined;
               return row?.label ?? "";
             }}
           />
-          <Bar dataKey="stars" fill="#0b3d5c" radius={[6, 6, 0, 0]} />
+          <Bar
+            dataKey="stars"
+            fill="#0b3d5c"
+            radius={[6, 6, 0, 0]}
+            maxBarSize={72}
+            isAnimationActive={false}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>
