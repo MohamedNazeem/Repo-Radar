@@ -91,11 +91,13 @@ export function RepoCard({
               icon={<BugReportOutlinedIcon />}
               label={`${openIssues.toLocaleString()} open issues`}
             />
-            <Chip
-              size="small"
-              icon={<UpdateOutlinedIcon />}
-              label={`Last commit ${formatDate(lastCommitDate)}`}
-            />
+            {lastCommitDate != null || showRefresh ? (
+              <Chip
+                size="small"
+                icon={<UpdateOutlinedIcon />}
+                label={`Last commit ${formatDate(lastCommitDate)}`}
+              />
+            ) : null}
             {language ? <Chip size="small" label={language} variant="outlined" /> : null}
           </Stack>
 
