@@ -12,6 +12,7 @@ export interface SearchState {
   results: GithubRepo[];
   loading: boolean;
   error: string | null;
+  lastFetchedQuery: string | null;
 }
 
 const initialState: SearchState = {
@@ -19,6 +20,7 @@ const initialState: SearchState = {
   results: [],
   loading: false,
   error: null,
+  lastFetchedQuery: null,
 };
 
 export const searchRepos = createAsyncThunk(
@@ -36,20 +38,26 @@ export const searchRepos = createAsyncThunk(
     }
   },
   {
-    condition: (query) => query.trim().length > 0,
+    condition: (query, { getState }) => {
+      const trimmed = query.trim();
+      if (!trimmed) return false;
+      const { lastFetchedQuery } = (getState() as { search: SearchState }).search;
+      return lastFetchedQuery !== trimmed;
+    },
   },
 );
 
 const searchSlice = createSlice({
   name: "search",
   initialState,
-  reducers: {
+  reducers: {   
     setQuery(state, action: PayloadAction<string>) {
       state.query = action.payload;
       if (!action.payload.trim()) {
         state.results = [];
         state.loading = false;
         state.error = null;
+        state.lastFetchedQuery = null;
       }
     },
     clearSearch(state) {
@@ -57,6 +65,7 @@ const searchSlice = createSlice({
       state.results = [];
       state.loading = false;
       state.error = null;
+      state.lastFetchedQuery = null;
     },
   },
   extraReducers: (builder) => {
@@ -68,6 +77,7 @@ const searchSlice = createSlice({
       .addCase(searchRepos.fulfilled, (state, action) => {
         state.loading = false;
         state.results = action.payload;
+        state.lastFetchedQuery = action.meta.arg.trim();
       })
       .addCase(searchRepos.rejected, (state, action) => {
         if (action.payload === "__stale__") {

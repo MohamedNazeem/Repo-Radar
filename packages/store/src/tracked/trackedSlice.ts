@@ -61,7 +61,11 @@ export const trackRepo = createAsyncThunk(
   async (repo: GithubRepo, { rejectWithValue }) => {
     try {
       const { owner, repo: repoName } = parseFullName(repo.full_name);
-      return await fetchTrackedDetails(owner, repoName);
+      const lastCommitDate = await getGithubClient().getLatestCommitDate(
+        owner,
+        repoName,
+      );
+      return mapGithubRepoToTracked(repo, lastCommitDate);
     } catch (error) {
       try {
         return mapGithubRepoToTracked(repo, null);
