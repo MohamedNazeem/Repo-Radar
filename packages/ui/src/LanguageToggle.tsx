@@ -51,7 +51,7 @@ export function LanguageToggle() {
         }
         sx={{
           minWidth: 0,
-          ml: 3,
+          ml: { xs: 0.5, sm: 3 },
           px: 1,
           fontWeight: 650,
           letterSpacing: "0.04em",

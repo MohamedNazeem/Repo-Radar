@@ -29,11 +29,22 @@ export function AppLayout() {
           bgcolor: "background.paper",
         }}
       >
-        <Toolbar sx={{ gap: 2 }}>
-          <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 700, color: "primary.main" }}>
+        <Toolbar sx={{ gap: { xs: 1, sm: 2 }, overflowX: "hidden", minWidth: 0 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              flexGrow: 1,
+              minWidth: 0,
+              fontWeight: 700,
+              color: "primary.main",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
             {t("app.title")}
           </Typography>
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ flexShrink: 0 }}>
             {navItems.map((item) => {
               const active =
                 item.to === "/"
