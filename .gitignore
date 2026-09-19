@@ -8,3 +8,5 @@ dist
 coverage
 *.tsbuildinfo
 .vercel
+.pnpm-store
+.pnpm-store-clean

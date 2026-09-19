@@ -6,5 +6,6 @@
     "composite": true
   },
   "include": ["src"],
+  "exclude": ["**/*.test.ts"],
   "references": [{ "path": "../api" }]
 }

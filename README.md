@@ -6,6 +6,8 @@ A GitHub repository search and tracking dashboard. Built as a senior frontend ta
 
 **Extra mile — accessibility.** Keyboard-only use is a requirement for inclusive products, not an afterthought. The shell is operable without a mouse: skip link, landmarks, visible focus, labeled search, live result announcements, and GitHub-style shortcuts (`/` search, `t` tracked, `?` help, `Esc` to clear or dismiss). This was not required for the core task; it is included because a11y is table stakes for Siemens-scale products.
 
+**Extra mile — tests.** Domain logic is unit-tested with Vitest at the package boundary: GitHub client and mappers, `t()` / plurals, search stale-query guards, track/refresh, and `localStorage` persistence. UI pixels are not snapshot-tested; the store and API are.
+
 ## Core features
 
 - **Search** — type-ahead GitHub search with 400ms debounce, empty and no-result states, and a stale-query guard so slow responses cannot overwrite a newer search
@@ -16,6 +18,7 @@ A GitHub repository search and tracking dashboard. Built as a senior frontend ta
 - **Design system** — shared MUI components (`RepoCard`, `SearchInput`, `EmptyState`, `ErrorAlert`, page header) and light / dark theme, persisted
 - **Localization (extra mile)** — English and German JSON catalogs, language dropdown, locale-aware dates/numbers, and MUI `en` / `de`. Theme and locale sit in the design system, not in Redux
 - **Accessibility (extra mile)** — skip-to-content, `header` / `nav` / `main` landmarks, visible `:focus-visible` rings, labeled search with `/` and `Esc`, live status for results, and a `?` shortcut dialog. Tab, Enter, and Space work on every control; `t` opens the watchlist when you are not typing
+- **Tests (extra mile)** — Vitest in `@repo/api`, `@repo/store`, and `@repo/ui`. Covers mappers, GitHub client (mocked `fetch`), i18n, search races, track/refresh, and watchlist persistence
 
 ## Setup
 
@@ -32,6 +35,7 @@ The Vite app listens on [http://127.0.0.1:43123](http://127.0.0.1:43123) (`stric
 pnpm build       # packages + web
 pnpm typecheck
 pnpm lint
+pnpm test        # Vitest: api, store, ui
 ```
 
 ### GitHub token (optional, recommended)
@@ -188,6 +192,10 @@ Visible focus uses `:focus-visible` in the theme so keyboard users get a 2px pri
 
 `@repo/plots` is Recharts-only. The tracked page injects theme colors, locale, and labels. Charts stay swappable without pulling MUI or Redux.
 
+### 8. Test the domain, not the pixels (extra mile)
+
+Vitest lives in the packages that own the rules: `@repo/api` (client + mappers), `@repo/store` (search races, track/refresh, persist), `@repo/ui` (`t()` / plurals). `fetch` and `localStorage` are injected or stubbed. There is no Enzyme/RTL snapshot suite — MUI screens change often and would lock the take-home to markup. A reviewer can `pnpm test` without a browser or a GitHub token.
+
 ---
 
 ## Assumptions and limitations
@@ -200,6 +208,7 @@ Visible focus uses `:focus-visible` in the theme so keyboard users get a 2px pri
 - **Chart is not a keyboard widget.** Recharts bars are pointer-oriented; star counts are also on each `RepoCard`, which is fully operable with Tab / Enter.
 - **No shared repo entity cache.** Search results and tracked repos are mapped at the track boundary (`mapGithubRepoToTracked`). Refresh re-fetches repo + latest commit for that id only.
 - **VITE_ token is exposed to the client.** Acceptable for a personal PAT in a take-home; not how a production Siemens app would proxy GitHub.
+- **No component snapshot tests.** Vitest covers client, i18n, and store behavior. Visual UI is exercised by using the app.
 
 ## Package map
 

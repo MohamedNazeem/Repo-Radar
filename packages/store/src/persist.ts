@@ -1,10 +1,10 @@
 import type { TrackedRepo } from "@repo/api";
 
-const STORAGE_KEY = "github-repo-tracker:tracked";
+export const TRACKED_STORAGE_KEY = "github-repo-tracker:tracked";
 
 export function loadTrackedRepos(): TrackedRepo[] {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(TRACKED_STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw) as unknown;
     return Array.isArray(parsed) ? (parsed as TrackedRepo[]) : [];
@@ -20,11 +20,11 @@ export function persistTrackedRepos(store: {
   store.subscribe(() => {
     try {
       localStorage.setItem(
-        STORAGE_KEY,
+        TRACKED_STORAGE_KEY,
         JSON.stringify(store.getState().tracked.repos),
       );
     } catch {
-  
+      // Ignore quota / private-mode failures.
     }
   });
 }
