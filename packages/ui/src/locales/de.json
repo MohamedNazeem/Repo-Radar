@@ -10,6 +10,12 @@
     "title": "Repositories suchen",
     "subtitle": "Finde GitHub-Projekte und beobachte die, die du im Blick behalten möchtest.",
     "placeholder": "GitHub-Repositories suchen…",
+    "label": "GitHub-Repositories suchen",
+    "clear": "Suche löschen",
+    "shortcutHint": "Drücke /, um zu suchen, T für Beobachtet, ? für Tastenkürzel.",
+    "loadingStatus": "Repositories werden gesucht",
+    "resultStatus_one": "{count} Repository gefunden",
+    "resultStatus_other": "{count} Repositories gefunden",
     "emptyTitle": "Tippe, um zu suchen",
     "emptyDescription": "Ergebnisse erscheinen nach einer kurzen Verzögerung, damit GitHub nicht bei jedem Tastendruck belastet wird.",
     "noResultsTitle": "Keine Repositories gefunden",
@@ -24,7 +30,8 @@
     "chartHeading": "Sterne nach Repository",
     "emptyTitle": "Noch keine beobachteten Repositories",
     "emptyDescription": "Suche ein Repository und klicke auf Beobachten, um es hier zu überwachen.",
-    "emptyAction": "Repositories suchen"
+    "emptyAction": "Repositories suchen",
+    "listLabel": "Beobachtete Repositories"
   },
   "repoCard": {
     "noDescription": "Keine Beschreibung vorhanden.",
@@ -37,7 +44,9 @@
     "dateUnavailable": "—",
     "track": "Beobachten",
     "untrack": "Nicht mehr beobachten",
-    "refresh": "Aktualisieren"
+    "refresh": "Aktualisieren",
+    "opensInNewTab": "{name} (öffnet in einem neuen Tab)",
+    "loading": "Repository wird aktualisiert"
   },
   "theme": {
     "switchToLight": "Zum hellen Modus wechseln",
@@ -45,6 +54,16 @@
   },
   "language": {
     "change": "Sprache ändern"
+  },
+  "a11y": {
+    "skipToMain": "Zum Inhalt springen",
+    "navLabel": "Hauptnavigation",
+    "shortcutsTitle": "Tastenkürzel",
+    "shortcutSearch": "Suche fokussieren",
+    "shortcutTracked": "Beobachtete Repositories öffnen",
+    "shortcutHelp": "Tastenkürzel anzeigen",
+    "shortcutEscape": "Suche löschen oder Dialog schließen",
+    "shortcutsClose": "Schließen"
   },
   "plots": {
     "empty": "Beobachte Repositories, um Sterne nebeneinander zu vergleichen.",

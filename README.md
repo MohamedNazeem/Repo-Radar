@@ -4,6 +4,8 @@ A GitHub repository search and tracking dashboard. Built as a senior frontend ta
 
 **Extra mile — localization.** Siemens is a multinational engineering company. Product UI that ships in one language is not enough for global teams, so English and German are first-class in the design system (JSON catalogs, locale-aware dates/numbers, MUI locale). This was not required for the core task; it is included because i18n is table stakes for Siemens-scale products.
 
+**Extra mile — accessibility.** Keyboard-only use is a requirement for inclusive products, not an afterthought. The shell is operable without a mouse: skip link, landmarks, visible focus, labeled search, live result announcements, and GitHub-style shortcuts (`/` search, `t` tracked, `?` help, `Esc` to clear or dismiss). This was not required for the core task; it is included because a11y is table stakes for Siemens-scale products.
+
 ## Core features
 
 - **Search** — type-ahead GitHub search with 400ms debounce, empty and no-result states, and a stale-query guard so slow responses cannot overwrite a newer search
@@ -13,6 +15,7 @@ A GitHub repository search and tracking dashboard. Built as a senior frontend ta
 - **Stars chart** — bar chart comparing tracked repositories side by side
 - **Design system** — shared MUI components (`RepoCard`, `SearchInput`, `EmptyState`, `ErrorAlert`, page header) and light / dark theme, persisted
 - **Localization (extra mile)** — English and German JSON catalogs, language dropdown, locale-aware dates/numbers, and MUI `en` / `de`. Theme and locale sit in the design system, not in Redux
+- **Accessibility (extra mile)** — skip-to-content, `header` / `nav` / `main` landmarks, visible `:focus-visible` rings, labeled search with `/` and `Esc`, live status for results, and a `?` shortcut dialog. Tab, Enter, and Space work on every control; `t` opens the watchlist when you are not typing
 
 ## Setup
 
@@ -161,11 +164,27 @@ No `i18next`. Locale mirrors theme: `AppLocaleProvider`, `useLocale()`, JSON cat
 
 English and German are the first pair because they match a Siemens-relevant locale set; dates and numbers use `en-US` / `de-DE`.
 
-### 5. Debounce in the UI, stale-query guard in the store
+### 5. Keyboard accessibility in the shell (extra mile)
+
+Mouse-first MUI is not enough. The app shell owns the keyboard model so every page inherits it:
+
+| Input | Action |
+|---|---|
+| `Tab` / `Shift+Tab` | Move between controls (native). Skip link is first in the tab order |
+| `/` | Focus search (routes to Search if you are on Tracked) |
+| `t` | Open tracked repositories (ignored while typing in an input) |
+| `?` | Open the shortcut dialog |
+| `Esc` | Clear the search field, or close the dialog / language menu |
+
+Search is a real labeled field (`<label>` + `type="search"`), not placeholder-only. Results announce through an `aria-live` status region so a screen reader hears “Searching…” then “10 repositories found” without moving focus. Repo names that open GitHub include “opens in a new tab” in the accessible name. The stars chart is visual; the same numbers are on the cards below, which stay fully keyboard-operable.
+
+Visible focus uses `:focus-visible` in the theme so keyboard users get a 2px primary outline without painting a ring on every mouse click.
+
+### 6. Debounce in the UI, stale-query guard in the store
 
 `useDebouncedValue` (400ms) lives in the page so GitHub is not hit on every keystroke. The search thunk still drops stale responses if the query changed while a request was in flight, and skips duplicate fetches for the same trimmed query.
 
-### 6. Charts as their own package
+### 7. Charts as their own package
 
 `@repo/plots` is Recharts-only. The tracked page injects theme colors, locale, and labels. Charts stay swappable without pulling MUI or Redux.
 
@@ -178,6 +197,7 @@ English and German are the first pair because they match a Siemens-relevant loca
 - **Search is not paginated.** The client requests a small first page (10 hits) — enough for the interaction, not a full GitHub clone.
 - **GitHub payload is not translated.** Names, descriptions, and languages stay as returned. App chrome (nav, empty states, buttons, errors we own) is localized.
 - **No locale-prefixed routes or RTL.** `en` and `de` are LTR. Adding Arabic/Hebrew would need direction on the theme.
+- **Chart is not a keyboard widget.** Recharts bars are pointer-oriented; star counts are also on each `RepoCard`, which is fully operable with Tab / Enter.
 - **No shared repo entity cache.** Search results and tracked repos are mapped at the track boundary (`mapGithubRepoToTracked`). Refresh re-fetches repo + latest commit for that id only.
 - **VITE_ token is exposed to the client.** Acceptable for a personal PAT in a take-home; not how a production Siemens app would proxy GitHub.
 

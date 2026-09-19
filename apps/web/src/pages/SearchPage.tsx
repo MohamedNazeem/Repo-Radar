@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import {
   EmptyState,
   ErrorAlert,
@@ -23,10 +24,18 @@ import {
 } from "@repo/store";
 import { toRepoId } from "@repo/api";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
+import { SEARCH_INPUT_ID } from "../hooks/useAppKeyboard";
+
+type SearchLocationState = {
+  focusSearch?: boolean;
+};
 
 export function SearchPage() {
   const { t } = useLocale();
   const dispatch = useAppDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const inputRef = useRef<HTMLInputElement>(null);
   const query = useAppSelector((state) => state.search.query);
   const results = useAppSelector((state) => state.search.results);
   const loading = useAppSelector((state) => state.search.loading);
@@ -42,6 +51,25 @@ export function SearchPage() {
     void dispatch(searchRepos(debouncedQuery));
   }, [debouncedQuery, dispatch]);
 
+  useEffect(() => {
+    const state = location.state as SearchLocationState | null;
+    if (!state?.focusSearch) return;
+    inputRef.current?.focus();
+    navigate(".", { replace: true, state: {} });
+  }, [location.state, navigate]);
+
+  const statusMessage = !query.trim()
+    ? ""
+    : loading
+      ? t("search.loadingStatus")
+      : error
+        ? t(error)
+        : results.length === 0 && debouncedQuery.trim() === query.trim()
+          ? t("search.noResultsTitle")
+          : results.length > 0
+            ? t("search.resultStatus", { count: results.length })
+            : "";
+
   return (
     <>
       <PageHeader
@@ -50,11 +78,37 @@ export function SearchPage() {
       />
 
       <SearchInput
+        id={SEARCH_INPUT_ID}
+        ref={inputRef}
         value={query}
         onChange={(value) => dispatch(setQuery(value))}
       />
 
-      <div style={{ marginTop: 24 }}>
+      <Box
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        sx={{
+          position: "absolute",
+          width: 1,
+          height: 1,
+          padding: 0,
+          margin: -1,
+          overflow: "hidden",
+          clip: "rect(0, 0, 0, 0)",
+          whiteSpace: "nowrap",
+          border: 0,
+        }}
+      >
+        {statusMessage}
+      </Box>
+
+      <Box
+        component="section"
+        aria-labelledby="page-title"
+        aria-busy={loading}
+        sx={{ mt: 3 }}
+      >
         {error ? <ErrorAlert message={t(error)} /> : null}
 
         {!query.trim() ? (
@@ -109,7 +163,7 @@ export function SearchPage() {
             })}
           </Grid>
         ) : null}
-      </div>
+      </Box>
 
       <Snackbar
         open={Boolean(trackedToast)}

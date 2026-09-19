@@ -10,6 +10,12 @@
     "title": "Search repositories",
     "subtitle": "Find GitHub projects and track the ones you want to monitor.",
     "placeholder": "Search GitHub repositories…",
+    "label": "Search GitHub repositories",
+    "clear": "Clear search",
+    "shortcutHint": "Press / to search, T for tracked, ? for shortcuts.",
+    "loadingStatus": "Searching repositories",
+    "resultStatus_one": "{count} repository found",
+    "resultStatus_other": "{count} repositories found",
     "emptyTitle": "Start typing to search",
     "emptyDescription": "Results appear after a short debounce so GitHub is not hammered on every keystroke.",
     "noResultsTitle": "No repositories found",
@@ -24,7 +30,8 @@
     "chartHeading": "Stars by repository",
     "emptyTitle": "No tracked repositories yet",
     "emptyDescription": "Search for a repository and click Track to start monitoring it here.",
-    "emptyAction": "Search repositories"
+    "emptyAction": "Search repositories",
+    "listLabel": "Tracked repositories"
   },
   "repoCard": {
     "noDescription": "No description provided.",
@@ -37,7 +44,9 @@
     "dateUnavailable": "—",
     "track": "Track",
     "untrack": "Untrack",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "opensInNewTab": "{name} (opens in a new tab)",
+    "loading": "Refreshing repository"
   },
   "theme": {
     "switchToLight": "Switch to light mode",
@@ -45,6 +54,16 @@
   },
   "language": {
     "change": "Change language"
+  },
+  "a11y": {
+    "skipToMain": "Skip to main content",
+    "navLabel": "Primary",
+    "shortcutsTitle": "Keyboard shortcuts",
+    "shortcutSearch": "Focus search",
+    "shortcutTracked": "Open tracked repositories",
+    "shortcutHelp": "Show keyboard shortcuts",
+    "shortcutEscape": "Clear search or close a dialog",
+    "shortcutsClose": "Close"
   },
   "plots": {
     "empty": "Track repositories to see stars compared side by side.",

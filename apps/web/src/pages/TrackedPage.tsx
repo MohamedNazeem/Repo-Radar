@@ -66,8 +66,13 @@ export function TrackedPage() {
         />
       ) : (
         <>
-          <Paper elevation={0} sx={{ p: 2.5, mb: 3, border: 1, borderColor: "divider" }}>
-            <Typography variant="h6" sx={{ mb: 2 }}>
+          <Paper
+            elevation={0}
+            component="section"
+            aria-labelledby="stars-chart-heading"
+            sx={{ p: 2.5, mb: 3, border: 1, borderColor: "divider" }}
+          >
+            <Typography id="stars-chart-heading" variant="h6" sx={{ mb: 2 }}>
               {t("tracked.chartHeading")}
             </Typography>
             <StarsBarChart
@@ -81,7 +86,12 @@ export function TrackedPage() {
             />
           </Paper>
 
-          <Grid container spacing={2}>
+          <Grid
+            container
+            spacing={2}
+            component="section"
+            aria-label={t("tracked.listLabel")}
+          >
             {trackedRepos.map((repo) => (
               <Grid key={repo.id} size={{ xs: 12, md: 6, lg: 4 }}>
                 <RepoCard

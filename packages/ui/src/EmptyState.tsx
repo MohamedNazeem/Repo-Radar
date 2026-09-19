@@ -22,7 +22,7 @@ export function EmptyState({ title, description, action }: EmptyStateProps) {
         bgcolor: "background.paper",
       }}
     >
-      <InboxOutlinedIcon color="disabled" sx={{ fontSize: 40, mb: 1 }} />
+      <InboxOutlinedIcon color="disabled" sx={{ fontSize: 40, mb: 1 }} aria-hidden />
       <Typography variant="h6">{title}</Typography>
       {description ? (
         <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>

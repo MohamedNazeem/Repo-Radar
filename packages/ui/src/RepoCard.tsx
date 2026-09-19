@@ -15,6 +15,7 @@ import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import Link from "@mui/material/Link";
+import { useId } from "react";
 import { useLocale } from "./AppLocaleProvider.js";
 import { intlLocales } from "./locale.js";
 
@@ -71,16 +72,22 @@ export function RepoCard({
 }: RepoCardProps) {
   const { locale, t } = useLocale();
   const intlLocale = intlLocales[locale];
-  const avatarName = ownerLogin?.trim() || fullName.split("/")[0] || fullName;
+  const titleId = useId();
 
   return (
-    <Card variant="outlined" sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+    <Card
+      component="article"
+      variant="outlined"
+      aria-labelledby={titleId}
+      sx={{ height: "100%", display: "flex", flexDirection: "column" }}
+    >
       <CardContent sx={{ flexGrow: 1 }}>
         <Stack spacing={1.25}>
           <Stack direction="row" spacing={1.25} alignItems="flex-start">
             <Avatar
               src={ownerAvatarUrl || undefined}
-              alt={t("repoCard.ownerAvatar", { name: avatarName })}
+              alt=""
+              aria-hidden
               sx={{ width: 40, height: 40, flexShrink: 0 }}
             >
               {ownerInitial(ownerLogin, fullName)}
@@ -93,17 +100,25 @@ export function RepoCard({
               sx={{ minWidth: 0, flex: 1 }}
             >
               <Link
+                id={titleId}
                 href={htmlUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 underline="hover"
                 variant="h6"
                 color="inherit"
+                aria-label={t("repoCard.opensInNewTab", { name: fullName })}
                 sx={{ fontWeight: 650, minWidth: 0, overflowWrap: "break-word" }}
               >
                 {fullName}
               </Link>
-              {isLoading ? <CircularProgress size={20} sx={{ flexShrink: 0 }} /> : null}
+              {isLoading ? (
+                <CircularProgress
+                  size={20}
+                  sx={{ flexShrink: 0 }}
+                  aria-label={t("repoCard.loading")}
+                />
+              ) : null}
             </Stack>
           </Stack>
 

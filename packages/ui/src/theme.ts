@@ -25,6 +25,7 @@ const muiLocales = {
 
 export function createAppTheme(mode: PaletteMode, locale: Locale = "en"): Theme {
   const isDark = mode === "dark";
+  const focusColor = isDark ? "#7eb6d4" : "#0b3d5c";
 
   return createTheme(
     {
@@ -32,7 +33,7 @@ export function createAppTheme(mode: PaletteMode, locale: Locale = "en"): Theme 
       palette: {
         mode,
         primary: {
-          main: isDark ? "#7eb6d4" : "#0b3d5c",
+          main: focusColor,
         },
         secondary: {
           main: isDark ? "#e08a5a" : "#c45c26",
@@ -40,6 +41,26 @@ export function createAppTheme(mode: PaletteMode, locale: Locale = "en"): Theme 
         background: {
           default: isDark ? "#0f1720" : "#f3f6f9",
           paper: isDark ? "#16202a" : "#ffffff",
+        },
+      },
+      components: {
+        MuiCssBaseline: {
+          styleOverrides: {
+            ":focus-visible": {
+              outline: `2px solid ${focusColor}`,
+              outlineOffset: 2,
+            },
+          },
+        },
+        MuiButtonBase: {
+          styleOverrides: {
+            root: {
+              "&.Mui-focusVisible": {
+                outline: `2px solid ${focusColor}`,
+                outlineOffset: 2,
+              },
+            },
+          },
         },
       },
     },

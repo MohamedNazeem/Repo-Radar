@@ -1,4 +1,4 @@
-import { useId, useState, type MouseEvent } from "react";
+import { useId, useState, type KeyboardEvent, type MouseEvent } from "react";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -17,7 +17,7 @@ export function LanguageToggle() {
   const menuId = useId();
   const label = t("language.change");
 
-  const handleOpen = (event: MouseEvent<HTMLElement>) => {
+  const handleOpen = (event: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -36,6 +36,12 @@ export function LanguageToggle() {
         color="primary"
         size="small"
         onClick={handleOpen}
+        onKeyDown={(event) => {
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            handleOpen(event);
+          }
+        }}
         aria-label={label}
         aria-haspopup="menu"
         aria-expanded={open ? "true" : undefined}
@@ -70,6 +76,9 @@ export function LanguageToggle() {
           paper: {
             sx: { minWidth: 168, mt: 0.5 },
           },
+          list: {
+            "aria-label": label,
+          },
         }}
       >
         {LOCALES.map((code) => {
@@ -77,7 +86,9 @@ export function LanguageToggle() {
           return (
             <MenuItem
               key={code}
+              role="menuitemradio"
               selected={selected}
+              aria-checked={selected}
               onClick={() => handleSelect(code)}
             >
               <ListItemIcon sx={{ minWidth: 32 }}>

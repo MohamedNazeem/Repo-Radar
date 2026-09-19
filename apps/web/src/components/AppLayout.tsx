@@ -6,7 +6,15 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { Link as RouterLink, Outlet, useLocation } from "react-router-dom";
-import { LanguageToggle, ThemeToggle, useLocale } from "@repo/ui";
+import {
+  KeyboardShortcutsDialog,
+  LanguageToggle,
+  MAIN_CONTENT_ID,
+  SkipLink,
+  ThemeToggle,
+  useLocale,
+} from "@repo/ui";
+import { useAppKeyboard } from "../hooks/useAppKeyboard";
 
 const navItems = [
   { key: "nav.search", to: "/" },
@@ -16,10 +24,13 @@ const navItems = [
 export function AppLayout() {
   const location = useLocation();
   const { t } = useLocale();
+  const { shortcutsOpen, closeShortcuts } = useAppKeyboard();
 
   return (
     <Box sx={{ minHeight: "100vh", pb: 6 }}>
+      <SkipLink />
       <AppBar
+        component="header"
         position="sticky"
         color="transparent"
         sx={{
@@ -32,6 +43,8 @@ export function AppLayout() {
         <Toolbar sx={{ gap: { xs: 1, sm: 2 }, overflowX: "hidden", minWidth: 0 }}>
           <Typography
             variant="h6"
+            component={RouterLink}
+            to="/"
             sx={{
               flexGrow: 1,
               minWidth: 0,
@@ -40,11 +53,19 @@ export function AppLayout() {
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
+              textDecoration: "none",
             }}
           >
             {t("app.title")}
           </Typography>
-          <Stack direction="row" spacing={1} alignItems="center" sx={{ flexShrink: 0 }}>
+          <Stack
+            component="nav"
+            aria-label={t("a11y.navLabel")}
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            sx={{ flexShrink: 0 }}
+          >
             {navItems.map((item) => {
               const active =
                 item.to === "/"
@@ -57,6 +78,7 @@ export function AppLayout() {
                   to={item.to}
                   variant={active ? "contained" : "text"}
                   color="primary"
+                  aria-current={active ? "page" : undefined}
                 >
                   {t(item.key)}
                 </Button>
@@ -68,9 +90,17 @@ export function AppLayout() {
         </Toolbar>
       </AppBar>
 
-      <Container maxWidth="lg" sx={{ pt: 4 }}>
+      <Container
+        component="main"
+        id={MAIN_CONTENT_ID}
+        tabIndex={-1}
+        maxWidth="lg"
+        sx={{ pt: 4, outline: "none", "&:focus, &:focus-visible": { outline: "none" } }}
+      >
         <Outlet />
       </Container>
+
+      <KeyboardShortcutsDialog open={shortcutsOpen} onClose={closeShortcuts} />
     </Box>
   );
 }

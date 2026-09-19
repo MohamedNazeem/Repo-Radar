@@ -19,7 +19,7 @@ export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
       sx={{ mb: 3 }}
     >
       <Box>
-        <Typography variant="h4" component="h1">
+        <Typography variant="h4" component="h1" id="page-title">
           {title}
         </Typography>
         {subtitle ? (
