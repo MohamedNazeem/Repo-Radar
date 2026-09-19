@@ -2,6 +2,7 @@ import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import type { ChangeEvent } from "react";
+import { useLocale } from "./AppLocaleProvider.js";
 
 export interface SearchInputProps {
   value: string;
@@ -13,9 +14,10 @@ export interface SearchInputProps {
 export function SearchInput({
   value,
   onChange,
-  placeholder = "Search GitHub repositories…",
+  placeholder,
   disabled = false,
 }: SearchInputProps) {
+  const { t } = useLocale();
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.value);
   };
@@ -25,7 +27,7 @@ export function SearchInput({
       fullWidth
       value={value}
       onChange={handleChange}
-      placeholder={placeholder}
+      placeholder={placeholder ?? t("search.placeholder")}
       disabled={disabled}
       size="medium"
       InputProps={{

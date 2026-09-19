@@ -34,7 +34,7 @@ export const searchRepos = createAsyncThunk(
       }
       return response.items;
     } catch (error) {
-      return rejectWithValue(getErrorMessage(error, "Failed to search repositories"));
+      return rejectWithValue(getErrorMessage(error, "errors.searchFailed"));
     }
   },
   {
@@ -87,7 +87,7 @@ const searchSlice = createSlice({
         state.error =
           (action.payload as string | undefined) ??
           action.error.message ??
-          "Failed to search repositories";
+          "errors.searchFailed";
         state.results = [];
       });
   },

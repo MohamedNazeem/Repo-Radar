@@ -19,6 +19,9 @@ export interface StarsBarChartProps {
   barColor?: string;
   gridColor?: string;
   tickColor?: string;
+  locale?: string;
+  emptyLabel?: string;
+  seriesName?: string;
 }
 
 export function StarsBarChart({
@@ -27,6 +30,9 @@ export function StarsBarChart({
   barColor = "#0b3d5c",
   gridColor = "currentColor",
   tickColor = "currentColor",
+  locale,
+  emptyLabel = "Track repositories to see stars compared side by side.",
+  seriesName = "Stars",
 }: StarsBarChartProps) {
   if (data.length === 0) {
     return (
@@ -40,7 +46,7 @@ export function StarsBarChart({
           opacity: 0.7,
         }}
       >
-        Track repositories to see stars compared side by side.
+        {emptyLabel}
       </div>
     );
   }
@@ -72,11 +78,11 @@ export function StarsBarChart({
             allowDecimals={false}
             width={72}
             tick={{ fontSize: 12, fill: tickColor }}
-            tickFormatter={(value: number) => value.toLocaleString()}
+            tickFormatter={(value: number) => value.toLocaleString(locale)}
           />
           <Tooltip
             cursor={{ fill: barColor, fillOpacity: 0.06 }}
-            formatter={(value: number) => [value.toLocaleString(), "Stars"]}
+            formatter={(value: number) => [value.toLocaleString(locale), seriesName]}
             labelFormatter={(_, payload) => {
               const row = payload?.[0]?.payload as { label?: string } | undefined;
               return row?.label ?? "";

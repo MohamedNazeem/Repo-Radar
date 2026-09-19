@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useTheme } from "@mui/material/styles";
 import { StarsBarChart } from "@repo/plots";
-import { EmptyState, PageHeader, RepoCard } from "@repo/ui";
+import { EmptyState, PageHeader, RepoCard, intlLocales, useLocale } from "@repo/ui";
 import {
   refreshRepo,
   selectStarsChartData,
@@ -16,6 +16,7 @@ import {
 
 export function TrackedPage() {
   const theme = useTheme();
+  const { locale, t } = useLocale();
   const dispatch = useAppDispatch();
   const trackedRepos = useAppSelector((state) => state.tracked.repos);
   const chartData = useAppSelector(selectStarsChartData);
@@ -26,8 +27,8 @@ export function TrackedPage() {
   return (
     <>
       <PageHeader
-        title="Tracked repositories"
-        subtitle="Monitor stars, open issues, and the latest commit for each favorite."
+        title={t("tracked.title")}
+        subtitle={t("tracked.subtitle")}
         actions={
           <Button
             variant="contained"
@@ -39,27 +40,30 @@ export function TrackedPage() {
               });
             }}
           >
-            Refresh all
+            {t("tracked.refreshAll")}
           </Button>
         }
       />
 
       <Paper elevation={0} sx={{ p: 2.5, mb: 3, border: 1, borderColor: "divider" }}>
         <Typography variant="h6" sx={{ mb: 2 }}>
-          Stars by repository
+          {t("tracked.chartHeading")}
         </Typography>
         <StarsBarChart
           data={chartData}
           barColor={theme.palette.primary.main}
           gridColor={theme.palette.divider}
           tickColor={theme.palette.text.secondary}
+          locale={intlLocales[locale]}
+          emptyLabel={t("plots.empty")}
+          seriesName={t("plots.stars")}
         />
       </Paper>
 
       {trackedRepos.length === 0 ? (
         <EmptyState
-          title="No tracked repositories yet"
-          description="Search for a repository and click Track to start monitoring it here."
+          title={t("tracked.emptyTitle")}
+          description={t("tracked.emptyDescription")}
         />
       ) : (
         <Grid container spacing={2}>

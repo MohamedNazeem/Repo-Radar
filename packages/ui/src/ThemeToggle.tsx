@@ -3,17 +3,21 @@ import Tooltip from "@mui/material/Tooltip";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import { useColorMode } from "./AppThemeProvider.js";
+import { useLocale } from "./AppLocaleProvider.js";
 
 export function ThemeToggle() {
   const { mode, toggleColorMode } = useColorMode();
+  const { t } = useLocale();
   const nextMode = mode === "light" ? "dark" : "light";
+  const label =
+    nextMode === "dark" ? t("theme.switchToDark") : t("theme.switchToLight");
 
   return (
-    <Tooltip title={`Switch to ${nextMode} mode`}>
+    <Tooltip title={label}>
       <IconButton
         color="primary"
         onClick={toggleColorMode}
-        aria-label={`Switch to ${nextMode} mode`}
+        aria-label={label}
       >
         {mode === "light" ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
       </IconButton>

@@ -8,6 +8,7 @@ import {
 } from "react";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import type { PaletteMode } from "@mui/material/styles";
+import { useLocale } from "./AppLocaleProvider.js";
 import { createAppTheme } from "./theme.js";
 
 const STORAGE_KEY = "github-repo-tracker:theme";
@@ -35,6 +36,7 @@ function readStoredMode(): PaletteMode {
 }
 
 export function AppThemeProvider({ children }: { children: ReactNode }) {
+  const { locale } = useLocale();
   const [mode, setMode] = useState<PaletteMode>(() => readStoredMode());
 
   const toggleColorMode = useCallback(() => {
@@ -49,7 +51,7 @@ export function AppThemeProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const theme = useMemo(() => createAppTheme(mode), [mode]);
+  const theme = useMemo(() => createAppTheme(mode, locale), [mode, locale]);
   const value = useMemo(
     () => ({ mode, toggleColorMode }),
     [mode, toggleColorMode],

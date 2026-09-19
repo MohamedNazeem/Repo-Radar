@@ -6,15 +6,16 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { Link as RouterLink, Outlet, useLocation } from "react-router-dom";
-import { ThemeToggle } from "@repo/ui";
+import { LanguageToggle, ThemeToggle, useLocale } from "@repo/ui";
 
 const navItems = [
-  { label: "Search", to: "/" },
-  { label: "Tracked", to: "/tracked" },
+  { key: "nav.search", to: "/" },
+  { key: "nav.tracked", to: "/tracked" },
 ] as const;
 
 export function AppLayout() {
   const location = useLocation();
+  const { t } = useLocale();
 
   return (
     <Box sx={{ minHeight: "100vh", pb: 6 }}>
@@ -30,7 +31,7 @@ export function AppLayout() {
       >
         <Toolbar sx={{ gap: 2 }}>
           <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 700, color: "primary.main" }}>
-            Repo Radar
+            {t("app.title")}
           </Typography>
           <Stack direction="row" spacing={1} alignItems="center">
             {navItems.map((item) => {
@@ -46,10 +47,11 @@ export function AppLayout() {
                   variant={active ? "contained" : "text"}
                   color="primary"
                 >
-                  {item.label}
+                  {t(item.key)}
                 </Button>
               );
             })}
+            <LanguageToggle />
             <ThemeToggle />
           </Stack>
         </Toolbar>

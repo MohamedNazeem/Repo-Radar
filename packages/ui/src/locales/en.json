@@ -1,0 +1,55 @@
+{
+  "app": {
+    "title": "Repo Radar"
+  },
+  "nav": {
+    "search": "Search",
+    "tracked": "Tracked"
+  },
+  "search": {
+    "title": "Search repositories",
+    "subtitle": "Find GitHub projects and track the ones you want to monitor.",
+    "placeholder": "Search GitHub repositories…",
+    "emptyTitle": "Start typing to search",
+    "emptyDescription": "Results appear after a short debounce so GitHub is not hammered on every keystroke.",
+    "noResultsTitle": "No repositories found",
+    "noResultsDescription": "Try a different keyword or a more specific owner/name query."
+  },
+  "tracked": {
+    "title": "Tracked repositories",
+    "subtitle": "Monitor stars, open issues, and the latest commit for each favorite.",
+    "refreshAll": "Refresh all",
+    "chartHeading": "Stars by repository",
+    "emptyTitle": "No tracked repositories yet",
+    "emptyDescription": "Search for a repository and click Track to start monitoring it here."
+  },
+  "repoCard": {
+    "noDescription": "No description provided.",
+    "stars_one": "{count} star",
+    "stars_other": "{count} stars",
+    "openIssues_one": "{count} open issue",
+    "openIssues_other": "{count} open issues",
+    "lastCommit": "Last commit {date}",
+    "dateUnavailable": "—",
+    "track": "Track",
+    "untrack": "Untrack",
+    "refresh": "Refresh"
+  },
+  "theme": {
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  },
+  "language": {
+    "change": "Change language"
+  },
+  "plots": {
+    "empty": "Track repositories to see stars compared side by side.",
+    "stars": "Stars"
+  },
+  "errors": {
+    "searchFailed": "Failed to search repositories",
+    "trackFailed": "Failed to track repository",
+    "refreshFailed": "Failed to refresh repository",
+    "notTracked": "Repository is not tracked"
+  }
+}

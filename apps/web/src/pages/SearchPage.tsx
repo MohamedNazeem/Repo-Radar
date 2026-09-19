@@ -7,6 +7,7 @@ import {
   PageHeader,
   RepoCard,
   SearchInput,
+  useLocale,
 } from "@repo/ui";
 import {
   searchRepos,
@@ -20,6 +21,7 @@ import { toRepoId } from "@repo/api";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 
 export function SearchPage() {
+  const { t } = useLocale();
   const dispatch = useAppDispatch();
   const query = useAppSelector((state) => state.search.query);
   const results = useAppSelector((state) => state.search.results);
@@ -38,8 +40,8 @@ export function SearchPage() {
   return (
     <>
       <PageHeader
-        title="Search repositories"
-        subtitle="Find GitHub projects and track the ones you want to monitor."
+        title={t("search.title")}
+        subtitle={t("search.subtitle")}
       />
 
       <SearchInput
@@ -48,12 +50,12 @@ export function SearchPage() {
       />
 
       <div style={{ marginTop: 24 }}>
-        {error ? <ErrorAlert message={error} /> : null}
+        {error ? <ErrorAlert message={t(error)} /> : null}
 
         {!query.trim() ? (
           <EmptyState
-            title="Start typing to search"
-            description="Results appear after a short debounce so GitHub is not hammered on every keystroke."
+            title={t("search.emptyTitle")}
+            description={t("search.emptyDescription")}
           />
         ) : null}
 
@@ -65,8 +67,8 @@ export function SearchPage() {
         results.length === 0 &&
         debouncedQuery.trim() === query.trim() ? (
           <EmptyState
-            title="No repositories found"
-            description="Try a different keyword or a more specific owner/name query."
+            title={t("search.noResultsTitle")}
+            description={t("search.noResultsDescription")}
           />
         ) : null}
 

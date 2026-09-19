@@ -70,7 +70,7 @@ export const trackRepo = createAsyncThunk(
       try {
         return mapGithubRepoToTracked(repo, null);
       } catch {
-        return rejectWithValue(getErrorMessage(error, "Failed to track repository"));
+        return rejectWithValue(getErrorMessage(error, "errors.trackFailed"));
       }
     }
   },
@@ -82,14 +82,14 @@ export const refreshRepo = createAsyncThunk(
     const state = getState() as { tracked: TrackedState };
     const existing = state.tracked.repos.find((repo) => repo.id === id);
     if (!existing) {
-      return rejectWithValue("Repository is not tracked");
+      return rejectWithValue("errors.notTracked");
     }
 
     try {
       const { owner, repo } = parseFullName(existing.fullName);
       return await fetchTrackedDetails(owner, repo);
     } catch (error) {
-      return rejectWithValue(getErrorMessage(error, "Failed to refresh repository"));
+      return rejectWithValue(getErrorMessage(error, "errors.refreshFailed"));
     }
   },
 );
@@ -126,7 +126,7 @@ const trackedSlice = createSlice({
         state.errorById[id] =
           (action.payload as string | undefined) ??
           action.error.message ??
-          "Failed to track repository";
+          "errors.trackFailed";
       })
       .addCase(refreshRepo.pending, (state, action) => {
         addLoadingId(state, action.meta.arg);
@@ -143,7 +143,7 @@ const trackedSlice = createSlice({
         state.errorById[id] =
           (action.payload as string | undefined) ??
           action.error.message ??
-          "Failed to refresh repository";
+          "errors.refreshFailed";
       });
   },
 });

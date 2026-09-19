@@ -1,0 +1,55 @@
+{
+  "app": {
+    "title": "Repo Radar"
+  },
+  "nav": {
+    "search": "Suche",
+    "tracked": "Beobachtet"
+  },
+  "search": {
+    "title": "Repositories suchen",
+    "subtitle": "Finde GitHub-Projekte und beobachte die, die du im Blick behalten möchtest.",
+    "placeholder": "GitHub-Repositories suchen…",
+    "emptyTitle": "Tippe, um zu suchen",
+    "emptyDescription": "Ergebnisse erscheinen nach einer kurzen Verzögerung, damit GitHub nicht bei jedem Tastendruck belastet wird.",
+    "noResultsTitle": "Keine Repositories gefunden",
+    "noResultsDescription": "Versuche ein anderes Stichwort oder eine genauere Owner/Name-Abfrage."
+  },
+  "tracked": {
+    "title": "Beobachtete Repositories",
+    "subtitle": "Überwache Sterne, offene Issues und den letzten Commit jedes Favoriten.",
+    "refreshAll": "Alle aktualisieren",
+    "chartHeading": "Sterne nach Repository",
+    "emptyTitle": "Noch keine beobachteten Repositories",
+    "emptyDescription": "Suche ein Repository und klicke auf Beobachten, um es hier zu überwachen."
+  },
+  "repoCard": {
+    "noDescription": "Keine Beschreibung vorhanden.",
+    "stars_one": "{count} Stern",
+    "stars_other": "{count} Sterne",
+    "openIssues_one": "{count} offenes Issue",
+    "openIssues_other": "{count} offene Issues",
+    "lastCommit": "Letzter Commit {date}",
+    "dateUnavailable": "—",
+    "track": "Beobachten",
+    "untrack": "Nicht mehr beobachten",
+    "refresh": "Aktualisieren"
+  },
+  "theme": {
+    "switchToLight": "Zum hellen Modus wechseln",
+    "switchToDark": "Zum dunklen Modus wechseln"
+  },
+  "language": {
+    "change": "Sprache ändern"
+  },
+  "plots": {
+    "empty": "Beobachte Repositories, um Sterne nebeneinander zu vergleichen.",
+    "stars": "Sterne"
+  },
+  "errors": {
+    "searchFailed": "Suche nach Repositories fehlgeschlagen",
+    "trackFailed": "Repository konnte nicht beobachtet werden",
+    "refreshFailed": "Repository konnte nicht aktualisiert werden",
+    "notTracked": "Repository wird nicht beobachtet"
+  }
+}

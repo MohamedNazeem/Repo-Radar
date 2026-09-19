@@ -14,6 +14,8 @@ import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import Link from "@mui/material/Link";
+import { useLocale } from "./AppLocaleProvider.js";
+import { intlLocales } from "./locale.js";
 
 export interface RepoCardProps {
   fullName: string;
@@ -31,11 +33,11 @@ export interface RepoCardProps {
   onRefresh?: () => void;
 }
 
-function formatDate(value?: string | null): string {
-  if (!value) return "—";
+function formatDate(value: string | null | undefined, locale: string, fallback: string): string {
+  if (!value) return fallback;
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
-  return date.toLocaleDateString(undefined, {
+  if (Number.isNaN(date.getTime())) return fallback;
+  return date.toLocaleDateString(locale, {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -57,6 +59,9 @@ export function RepoCard({
   onTrackToggle,
   onRefresh,
 }: RepoCardProps) {
+  const { locale, t } = useLocale();
+  const intlLocale = intlLocales[locale];
+
   return (
     <Card variant="outlined" sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <CardContent sx={{ flexGrow: 1 }}>
@@ -77,25 +82,27 @@ export function RepoCard({
           </Stack>
 
           <Typography variant="body2" color="text.secondary" sx={{ minHeight: 40 }}>
-            {description || "No description provided."}
+            {description || t("repoCard.noDescription")}
           </Typography>
 
           <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
             <Chip
               size="small"
               icon={<StarBorderIcon />}
-              label={`${stars.toLocaleString()} stars`}
+              label={t("repoCard.stars", { count: stars })}
             />
             <Chip
               size="small"
               icon={<BugReportOutlinedIcon />}
-              label={`${openIssues.toLocaleString()} open issues`}
+              label={t("repoCard.openIssues", { count: openIssues })}
             />
             {lastCommitDate != null || showRefresh ? (
               <Chip
                 size="small"
                 icon={<UpdateOutlinedIcon />}
-                label={`Last commit ${formatDate(lastCommitDate)}`}
+                label={t("repoCard.lastCommit", {
+                  date: formatDate(lastCommitDate, intlLocale, t("repoCard.dateUnavailable")),
+                })}
               />
             ) : null}
             {language ? <Chip size="small" label={language} variant="outlined" /> : null}
@@ -103,7 +110,7 @@ export function RepoCard({
 
           {error ? (
             <Alert severity="error" sx={{ mt: 1 }}>
-              {error}
+              {t(error)}
             </Alert>
           ) : null}
         </Stack>
@@ -117,7 +124,7 @@ export function RepoCard({
           onClick={onTrackToggle}
           disabled={isLoading && !isTracked}
         >
-          {isTracked ? "Untrack" : "Track"}
+          {isTracked ? t("repoCard.untrack") : t("repoCard.track")}
         </Button>
         {showRefresh && onRefresh ? (
           <Button
@@ -126,7 +133,7 @@ export function RepoCard({
             onClick={onRefresh}
             disabled={isLoading}
           >
-            Refresh
+            {t("repoCard.refresh")}
           </Button>
         ) : null}
       </CardActions>

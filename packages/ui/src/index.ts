@@ -1,6 +1,10 @@
 export { appTheme, createAppTheme } from "./theme.js";
 export { AppThemeProvider, useColorMode } from "./AppThemeProvider.js";
 export { ThemeToggle } from "./ThemeToggle.js";
+export { AppLocaleProvider, useLocale } from "./AppLocaleProvider.js";
+export { LanguageToggle } from "./LanguageToggle.js";
+export type { Locale, TranslateFn, TranslateVars } from "./locale.js";
+export { LOCALES, intlLocales, localeLabels } from "./locale.js";
 export { SearchInput } from "./SearchInput.js";
 export type { SearchInputProps } from "./SearchInput.js";
 export { RepoCard } from "./RepoCard.js";
