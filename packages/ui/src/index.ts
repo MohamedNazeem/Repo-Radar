@@ -1,4 +1,6 @@
-export { appTheme } from "./theme.js";
+export { appTheme, createAppTheme } from "./theme.js";
+export { AppThemeProvider, useColorMode } from "./AppThemeProvider.js";
+export { ThemeToggle } from "./ThemeToggle.js";
 export { SearchInput } from "./SearchInput.js";
 export type { SearchInputProps } from "./SearchInput.js";
 export { RepoCard } from "./RepoCard.js";

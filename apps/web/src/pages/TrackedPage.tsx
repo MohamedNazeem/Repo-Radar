@@ -3,6 +3,7 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { useTheme } from "@mui/material/styles";
 import { StarsBarChart } from "@repo/plots";
 import { EmptyState, PageHeader, RepoCard } from "@repo/ui";
 import {
@@ -14,6 +15,7 @@ import {
 } from "@repo/store";
 
 export function TrackedPage() {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   const trackedRepos = useAppSelector((state) => state.tracked.repos);
   const chartData = useAppSelector(selectStarsChartData);
@@ -46,7 +48,12 @@ export function TrackedPage() {
         <Typography variant="h6" sx={{ mb: 2 }}>
           Stars by repository
         </Typography>
-        <StarsBarChart data={chartData} />
+        <StarsBarChart
+          data={chartData}
+          barColor={theme.palette.primary.main}
+          gridColor={theme.palette.divider}
+          tickColor={theme.palette.text.secondary}
+        />
       </Paper>
 
       {trackedRepos.length === 0 ? (

@@ -16,9 +16,18 @@ export interface StarsChartDatum {
 export interface StarsBarChartProps {
   data: StarsChartDatum[];
   height?: number;
+  barColor?: string;
+  gridColor?: string;
+  tickColor?: string;
 }
 
-export function StarsBarChart({ data, height = 320 }: StarsBarChartProps) {
+export function StarsBarChart({
+  data,
+  height = 320,
+  barColor = "#0b3d5c",
+  gridColor = "currentColor",
+  tickColor = "currentColor",
+}: StarsBarChartProps) {
   if (data.length === 0) {
     return (
       <div
@@ -26,10 +35,9 @@ export function StarsBarChart({ data, height = 320 }: StarsBarChartProps) {
           height,
           display: "grid",
           placeItems: "center",
-          border: "1px dashed #c5ced6",
+          border: "1px dashed currentColor",
           borderRadius: 10,
-          color: "#5f6b76",
-          background: "#fff",
+          opacity: 0.7,
         }}
       >
         Track repositories to see stars compared side by side.
@@ -51,23 +59,23 @@ export function StarsBarChart({ data, height = 320 }: StarsBarChartProps) {
           data={chartData}
           margin={{ top: 16, right: 24, left: 8, bottom: 56 }}
         >
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#d7dee5" />
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridColor} opacity={0.25} />
           <XAxis
             dataKey="shortLabel"
             interval={0}
             angle={-25}
             textAnchor="end"
             height={64}
-            tick={{ fontSize: 12, fill: "#44515c" }}
+            tick={{ fontSize: 12, fill: tickColor }}
           />
           <YAxis
             allowDecimals={false}
             width={72}
-            tick={{ fontSize: 12, fill: "#44515c" }}
+            tick={{ fontSize: 12, fill: tickColor }}
             tickFormatter={(value: number) => value.toLocaleString()}
           />
           <Tooltip
-            cursor={{ fill: "rgba(11, 61, 92, 0.06)" }}
+            cursor={{ fill: barColor, fillOpacity: 0.06 }}
             formatter={(value: number) => [value.toLocaleString(), "Stars"]}
             labelFormatter={(_, payload) => {
               const row = payload?.[0]?.payload as { label?: string } | undefined;
@@ -76,7 +84,7 @@ export function StarsBarChart({ data, height = 320 }: StarsBarChartProps) {
           />
           <Bar
             dataKey="stars"
-            fill="#0b3d5c"
+            fill={barColor}
             radius={[6, 6, 0, 0]}
             maxBarSize={72}
             isAnimationActive={false}

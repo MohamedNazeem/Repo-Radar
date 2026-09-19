@@ -6,6 +6,7 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { Link as RouterLink, Outlet, useLocation } from "react-router-dom";
+import { ThemeToggle } from "@repo/ui";
 
 const navItems = [
   { label: "Search", to: "/" },
@@ -17,12 +18,21 @@ export function AppLayout() {
 
   return (
     <Box sx={{ minHeight: "100vh", pb: 6 }}>
-      <AppBar position="sticky" elevation={0} color="transparent" sx={{ borderBottom: 1, borderColor: "divider", backdropFilter: "blur(10px)", bgcolor: "rgba(243,246,249,0.85)" }}>
+      <AppBar
+        position="sticky"
+        color="transparent"
+        sx={{
+          borderBottom: 1,
+          borderColor: "divider",
+          backdropFilter: "blur(10px)",
+          bgcolor: "background.paper",
+        }}
+      >
         <Toolbar sx={{ gap: 2 }}>
           <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 700, color: "primary.main" }}>
             GitHub Repo Tracker
           </Typography>
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} alignItems="center">
             {navItems.map((item) => {
               const active =
                 item.to === "/"
@@ -40,6 +50,7 @@ export function AppLayout() {
                 </Button>
               );
             })}
+            <ThemeToggle />
           </Stack>
         </Toolbar>
       </AppBar>

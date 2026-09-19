@@ -2,10 +2,6 @@
   font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #14212b;
-  background:
-    radial-gradient(circle at top left, rgba(196, 92, 38, 0.08), transparent 34%),
-    linear-gradient(180deg, #e8eef3 0%, #f3f6f9 42%, #f7f9fb 100%);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

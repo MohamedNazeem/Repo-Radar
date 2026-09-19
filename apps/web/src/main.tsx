@@ -2,8 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import { appTheme } from "@repo/ui";
+import { AppThemeProvider } from "@repo/ui";
 import {
   configureGithubClient,
   setupStore,
@@ -20,12 +19,11 @@ const { store } = setupStore();
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
-      <ThemeProvider theme={appTheme}>
-        <CssBaseline />
+      <AppThemeProvider>
         <BrowserRouter>
           <App />
         </BrowserRouter>
-      </ThemeProvider>
+      </AppThemeProvider>
     </Provider>
   </StrictMode>,
 );

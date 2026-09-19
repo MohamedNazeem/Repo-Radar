@@ -1,19 +1,6 @@
-import { createTheme } from "@mui/material/styles";
+import { createTheme, type PaletteMode, type Theme } from "@mui/material/styles";
 
-export const appTheme = createTheme({
-  palette: {
-    mode: "light",
-    primary: {
-      main: "#0b3d5c",
-    },
-    secondary: {
-      main: "#c45c26",
-    },
-    background: {
-      default: "#f3f6f9",
-      paper: "#ffffff",
-    },
-  },
+const shared = {
   typography: {
     fontFamily: '"IBM Plex Sans", "Segoe UI", sans-serif',
     h4: {
@@ -27,4 +14,27 @@ export const appTheme = createTheme({
   shape: {
     borderRadius: 10,
   },
-});
+} as const;
+
+export function createAppTheme(mode: PaletteMode): Theme {
+  const isDark = mode === "dark";
+
+  return createTheme({
+    ...shared,
+    palette: {
+      mode,
+      primary: {
+        main: isDark ? "#7eb6d4" : "#0b3d5c",
+      },
+      secondary: {
+        main: isDark ? "#e08a5a" : "#c45c26",
+      },
+      background: {
+        default: isDark ? "#0f1720" : "#f3f6f9",
+        paper: isDark ? "#16202a" : "#ffffff",
+      },
+    },
+  });
+}
+
+export const appTheme = createAppTheme("light");

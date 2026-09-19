@@ -4,6 +4,7 @@ export function toRepoId(fullName: string): string {
   return fullName.toLowerCase();
 }
 
+// Reshape a GithubRepo into a TrackedRepo for track tab and persist.
 export function mapGithubRepoToTracked(
   repo: GithubRepo,
   lastCommitDate: string | null = null,
