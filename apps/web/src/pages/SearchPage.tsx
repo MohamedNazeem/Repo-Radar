@@ -1,5 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
+import { Link as RouterLink } from "react-router-dom";
 import {
   EmptyState,
   ErrorAlert,
@@ -31,6 +35,7 @@ export function SearchPage() {
     state.tracked.repos.map((repo) => repo.id),
   );
   const debouncedQuery = useDebouncedValue(query, 400);
+  const [trackedToast, setTrackedToast] = useState<string | null>(null);
 
   useEffect(() => {
     if (!debouncedQuery.trim()) return;
@@ -87,12 +92,15 @@ export function SearchPage() {
                     openIssues={repo.open_issues_count}
                     lastCommitDate={null}
                     language={repo.language}
+                    ownerLogin={repo.owner.login}
+                    ownerAvatarUrl={repo.owner.avatar_url}
                     isTracked={isTracked}
                     onTrackToggle={() => {
                       if (isTracked) {
                         dispatch(untrackRepo(id));
                       } else {
                         void dispatch(trackRepo(repo));
+                        setTrackedToast(repo.full_name);
                       }
                     }}
                   />
@@ -102,6 +110,38 @@ export function SearchPage() {
           </Grid>
         ) : null}
       </div>
+
+      <Snackbar
+        open={Boolean(trackedToast)}
+        autoHideDuration={5000}
+        onClose={(_, reason) => {
+          if (reason === "clickaway") return;
+          setTrackedToast(null);
+        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          severity="success"
+          variant="filled"
+          sx={{ alignItems: "center", width: "100%" }}
+          action={
+            <Button
+              color="inherit"
+              size="small"
+              component={RouterLink}
+              to="/tracked"
+              onClick={() => setTrackedToast(null)}
+              sx={{ whiteSpace: "nowrap", flexShrink: 0 }}
+            >
+              {t("search.viewTracked")}
+            </Button>
+          }
+        >
+          {trackedToast
+            ? t("search.trackedToast", { name: trackedToast })
+            : null}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

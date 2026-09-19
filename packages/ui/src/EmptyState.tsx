@@ -1,13 +1,15 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import InboxOutlinedIcon from "@mui/icons-material/InboxOutlined";
+import type { ReactNode } from "react";
 
 export interface EmptyStateProps {
   title: string;
   description?: string;
+  action?: ReactNode;
 }
 
-export function EmptyState({ title, description }: EmptyStateProps) {
+export function EmptyState({ title, description, action }: EmptyStateProps) {
   return (
     <Box
       sx={{
@@ -27,6 +29,7 @@ export function EmptyState({ title, description }: EmptyStateProps) {
           {description}
         </Typography>
       ) : null}
+      {action ? <Box sx={{ mt: 2.5 }}>{action}</Box> : null}
     </Box>
   );
 }

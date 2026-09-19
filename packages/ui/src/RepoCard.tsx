@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Chip from "@mui/material/Chip";
+import Avatar from "@mui/material/Avatar";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
@@ -25,6 +26,8 @@ export interface RepoCardProps {
   openIssues: number;
   lastCommitDate?: string | null;
   language?: string | null;
+  ownerLogin?: string | null;
+  ownerAvatarUrl?: string | null;
   isTracked: boolean;
   isLoading?: boolean;
   error?: string | null;
@@ -44,6 +47,11 @@ function formatDate(value: string | null | undefined, locale: string, fallback: 
   });
 }
 
+function ownerInitial(ownerLogin: string | null | undefined, fullName: string): string {
+  const source = ownerLogin?.trim() || fullName.split("/")[0] || fullName;
+  return source.slice(0, 1).toUpperCase();
+}
+
 export function RepoCard({
   fullName,
   description,
@@ -52,6 +60,8 @@ export function RepoCard({
   openIssues,
   lastCommitDate,
   language,
+  ownerLogin,
+  ownerAvatarUrl,
   isTracked,
   isLoading = false,
   error = null,
@@ -61,24 +71,40 @@ export function RepoCard({
 }: RepoCardProps) {
   const { locale, t } = useLocale();
   const intlLocale = intlLocales[locale];
+  const avatarName = ownerLogin?.trim() || fullName.split("/")[0] || fullName;
 
   return (
     <Card variant="outlined" sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <CardContent sx={{ flexGrow: 1 }}>
         <Stack spacing={1.25}>
-          <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
-            <Link
-              href={htmlUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              underline="hover"
-              variant="h6"
-              color="inherit"
-              sx={{ fontWeight: 650 }}
+          <Stack direction="row" spacing={1.25} alignItems="flex-start">
+            <Avatar
+              src={ownerAvatarUrl || undefined}
+              alt={t("repoCard.ownerAvatar", { name: avatarName })}
+              sx={{ width: 40, height: 40, flexShrink: 0 }}
             >
-              {fullName}
-            </Link>
-            {isLoading ? <CircularProgress size={20} /> : null}
+              {ownerInitial(ownerLogin, fullName)}
+            </Avatar>
+            <Stack
+              direction="row"
+              spacing={1}
+              alignItems="center"
+              justifyContent="space-between"
+              sx={{ minWidth: 0, flex: 1 }}
+            >
+              <Link
+                href={htmlUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                underline="hover"
+                variant="h6"
+                color="inherit"
+                sx={{ fontWeight: 650, minWidth: 0, overflowWrap: "break-word" }}
+              >
+                {fullName}
+              </Link>
+              {isLoading ? <CircularProgress size={20} sx={{ flexShrink: 0 }} /> : null}
+            </Stack>
           </Stack>
 
           <Typography variant="body2" color="text.secondary" sx={{ minHeight: 40 }}>

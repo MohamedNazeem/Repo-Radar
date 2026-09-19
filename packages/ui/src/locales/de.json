@@ -13,7 +13,9 @@
     "emptyTitle": "Tippe, um zu suchen",
     "emptyDescription": "Ergebnisse erscheinen nach einer kurzen Verzögerung, damit GitHub nicht bei jedem Tastendruck belastet wird.",
     "noResultsTitle": "Keine Repositories gefunden",
-    "noResultsDescription": "Versuche ein anderes Stichwort oder eine genauere Owner/Name-Abfrage."
+    "noResultsDescription": "Versuche ein anderes Stichwort oder eine genauere Owner/Name-Abfrage.",
+    "trackedToast": "{name} wird jetzt beobachtet.",
+    "viewTracked": "Anzeigen"
   },
   "tracked": {
     "title": "Beobachtete Repositories",
@@ -21,10 +23,12 @@
     "refreshAll": "Alle aktualisieren",
     "chartHeading": "Sterne nach Repository",
     "emptyTitle": "Noch keine beobachteten Repositories",
-    "emptyDescription": "Suche ein Repository und klicke auf Beobachten, um es hier zu überwachen."
+    "emptyDescription": "Suche ein Repository und klicke auf Beobachten, um es hier zu überwachen.",
+    "emptyAction": "Repositories suchen"
   },
   "repoCard": {
     "noDescription": "Keine Beschreibung vorhanden.",
+    "ownerAvatar": "Avatar von {name}",
     "stars_one": "{count} Stern",
     "stars_other": "{count} Sterne",
     "openIssues_one": "{count} offenes Issue",
