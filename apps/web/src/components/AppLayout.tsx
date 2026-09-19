@@ -30,7 +30,7 @@ export function AppLayout() {
       >
         <Toolbar sx={{ gap: 2 }}>
           <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 700, color: "primary.main" }}>
-            GitHub Repo Tracker
+            Repo Radar
           </Typography>
           <Stack direction="row" spacing={1} alignItems="center">
             {navItems.map((item) => {
